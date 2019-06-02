@@ -16,6 +16,10 @@ KEYS = [
   :f1, :f2, :f3, :f4, :f5, :f6, :f7, :f8, :f9, :f10, 
 ]
 
+def oled_command(*args)
+  Process.wait(fork { exec("/usr/sbin/oled-exp", "-q", *args) })
+end
+
 class TextLayout
   attr_reader :width, :height
 
@@ -60,17 +64,21 @@ class Reconciler
 end
 
 if __FILE__ == $0
-
+  layout = TextLayout.new(21, 8)
+  reconciler = Reconciler.new(21, 8)
   message = ""
   shift = false
+  prev_screen = layout.render(message)
 
-  exec "/usr/sbin/oled-exp", "-i", "dim", "on"
+  
+  oled_command "-i", "dim", "on"
   trap("SIGINT") do
-    exec "/usr/sbin/oled-exp", "-c"
+    oled_command "-c"
     exit!
   end
 
   dev = File.open(DEVICE, 'rb')
+  puts dev
   while data = dev.read(16)
     time, type, code, value = data.unpack("QSSL")
     letter = KEYS[code]
@@ -91,15 +99,15 @@ if __FILE__ == $0
       message += letter
     end
 
-    row = message.length / 20
-    col = message.length % 20
-
     if letter == :backspace
       message.chop!
       letter = ' '
     end
 
-    exec "/usr/sbin/oled-exp", "cursor", "#{row * 2},#{col}", "write", letter
+    next_screen = layout.render(message)
+    reconciler.reconcile(prev_screen, next_screen) do |row, col, char|
+      oled_command "cursor", "#{row},#{col}", "write", char
+    end
+    prev_screen = next_screen
   end
-
 end

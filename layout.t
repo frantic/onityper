@@ -1,5 +1,17 @@
 This is a test
 
+Empty state
+
+  $ $TESTDIR/layout.rb ""
+  |                     |
+  |                     |
+  |                     |
+  |                     |
+  |                     |
+  |                     |
+  |                     |
+  |                     |
+
   $ $TESTDIR/layout.rb Hello
   |Hello                |
   |                     |
