@@ -1,13 +1,6 @@
 #!/usr/bin/env ruby
 
-class Reconciler
-  def reconcile(from, to, &block)
-    raise "Sizes differ #{from.size} != #{to.size}" if from.size != to.size
-    to.each_char.with_index do |char, index|
-      block.call(char, index) if from[index] != char
-    end
-  end
-end
+require_relative 'onityper'
 
 if __FILE__ == $0
   rc = Reconciler.new
