@@ -16,45 +16,47 @@ KEYS = [
   :f1, :f2, :f3, :f4, :f5, :f6, :f7, :f8, :f9, :f10, 
 ]
 
-system "oled-exp -i dim on"
+if __FILE__ == $0
 
-trap("SIGINT") do
-  system "oled-exp -c"
-  exit!
+  message = ""
+  shift = false
+
+  exec "/usr/sbin/oled-exp", "-i", "dim", "on"
+  trap("SIGINT") do
+    exec "/usr/sbin/oled-exp", "-c"
+    exit!
+  end
+
+  dev = File.open(DEVICE, 'rb')
+  while data = dev.read(16)
+    time, type, code, value = data.unpack("QSSL")
+    letter = KEYS[code]
+
+    next unless type == EV_KEY
+
+    if letter == :shift
+      shift = value == V_PRESS || value == V_REPEAT
+      next
+    end
+
+    next unless value == V_PRESS || value == V_REPEAT
+
+    next unless letter
+
+    if letter.to_s.length == 1
+      letter = shift ? letter.to_s.upcase : letter.to_s.downcase
+      message += letter
+    end
+
+    row = message.length / 20
+    col = message.length % 20
+
+    if letter == :backspace
+      message.chop!
+      letter = ' '
+    end
+
+    exec "/usr/sbin/oled-exp", "cursor", "#{row * 2},#{col}", "write", letter
+  end
+
 end
-
-message = ""
-shift = false
-
-dev = File.open(DEVICE, 'rb')
-while data = dev.read(16)
-  time, type, code, value = data.unpack("QSSL")
-  letter = KEYS[code]
-
-  next unless type == EV_KEY
-
-  if letter == :shift
-    shift = value == V_PRESS || value == V_REPEAT
-    next
-  end
-
-  next unless value == V_PRESS || value == V_REPEAT
-
-  next unless letter
-
-  if letter.to_s.length == 1
-    letter = shift ? letter.to_s.upcase : letter.to_s.downcase
-    message += letter
-  end
-
-  row = message.length / 20
-  col = message.length % 20
-
-  if letter == :backspace
-    message.chop!
-    letter = ' '
-  end
-
-  system "oled-exp cursor #{row * 2},#{col} write '#{letter}'"
-end
-
