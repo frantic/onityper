@@ -1,6 +1,6 @@
 This is a test
 
-  $ $TESTDIR/tests.rb Hello
+  $ $TESTDIR/layout.rb Hello
   |Hello                |
   |                     |
   |                     |
@@ -13,7 +13,7 @@ This is a test
 
 Text wrapping
 
-  $ $TESTDIR/tests.rb "Hello World Hello World Hello World Hello World"
+  $ $TESTDIR/layout.rb "Hello World Hello World Hello World Hello World"
   |Hello World Hello Wor|
   |                     |
   |ld Hello World Hello |
