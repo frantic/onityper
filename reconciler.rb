@@ -2,7 +2,7 @@
 
 class Reconciler
   def reconcile(from, to, &block)
-    raise Error.new("Sizes differ #{from.size} != #{to.size}") if from.size != to.size
+    raise "Sizes differ #{from.size} != #{to.size}" if from.size != to.size
     to.each_char.with_index do |char, index|
       block.call(char, index) if from[index] != char
     end
