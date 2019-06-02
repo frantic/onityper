@@ -9,3 +9,16 @@ This is a test
   |                     |
   |                     |
   |                     |
+
+
+Text wrapping
+
+  $ $TESTDIR/tests.rb "Hello World Hello World Hello World Hello World"
+  |Hello World Hello Wor|
+  |ld Hello World Hello |
+  |World                |
+  |                     |
+  |                     |
+  |                     |
+  |                     |
+  |                     |
