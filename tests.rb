@@ -12,9 +12,13 @@ class TextLayout
 
   def render(text)
     res = ""
-    height.times do
-      res += text[0...@width].ljust(@width)
-      text = text[@width..-1] || ""
+    height.times do |row|
+      if row % 2 == 1
+        res += " " * @width
+      else
+        res += text[0...@width].ljust(@width)
+        text = text[@width..-1] || ""
+      end
     end
     res
   end
