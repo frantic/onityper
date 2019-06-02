@@ -42,10 +42,19 @@ end
 
 
 class Reconciler
+  def initialize(width, height)
+    @width = width
+    @height = height
+  end
+
   def reconcile(from, to, &block)
     raise "Sizes differ #{from.size} != #{to.size}" if from.size != to.size
     to.each_char.with_index do |char, index|
-      block.call(char, index) if from[index] != char
+      if from[index] != char
+        row = index / @width
+        col = index % @width
+        block.call(row, col, char)
+      end
     end
   end
 end
