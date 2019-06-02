@@ -22,3 +22,15 @@ Text wrapping
   |                     |
   |                     |
   |                     |
+
+Text scrolling
+
+  $ $TESTDIR/layout.rb "Hello World Hello World Hello World Hello World. Long text. Long text. Long text. Long text. Long text. Done"
+  |World. Long text. Lon|
+  |                     |
+  |g text. Long text. Lo|
+  |                     |
+  |ng text. Long text. D|
+  |                     |
+  |one                  |
+  |                     |

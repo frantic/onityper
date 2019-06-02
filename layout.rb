@@ -11,16 +11,18 @@ class TextLayout
   end
 
   def render(text)
-    res = ""
-    height.times do |row|
+    res = []
+    row = 0
+    while text.length > 0 || row < @height || row % 2 == 1
       if row % 2 == 1
-        res += " " * @width
+        res << " " * @width
       else
-        res += text[0...@width].ljust(@width)
+        res << text[0...@width].ljust(@width)
         text = text[@width..-1] || ""
       end
+      row += 1
     end
-    res
+    res.last(@height).join
   end
 end
 
