@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative 'onityper'
+require_relative '../onityper'
 
 if __FILE__ == $0
   rc = Reconciler.new(5, 5)
