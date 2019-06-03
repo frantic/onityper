@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 SESSION="$(screen -ls | grep Attached | awk '{ print $1 }')"
 
 if [ -z "$SESSION" ]; then
@@ -11,7 +11,7 @@ fi
 screen -S $SESSION -X stuff $'\003'
 screen -S $SESSION -X stuff 'ruby <<\EOF'
 screen -S $SESSION -X stuff $'\015'
-screen -S $SESSION -X readreg p "$DIR/onityper.rb"
+screen -S $SESSION -X readreg p "$ROOT/onityper.rb"
 screen -S $SESSION -X paste p
 screen -S $SESSION -X stuff $'\015'
 screen -S $SESSION -X stuff 'EOF'
