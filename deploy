@@ -1,0 +1,18 @@
+#!/bin/bash -e
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+SESSION="$(screen -ls | grep Attached | awk '{ print $1 }')"
+
+if [ -z "$SESSION" ]; then
+  echo "screen is not running"
+  exit 1
+fi
+
+screen -S $SESSION -X stuff $'\003'
+screen -S $SESSION -X stuff 'ruby <<\EOF'
+screen -S $SESSION -X stuff $'\015'
+screen -S $SESSION -X readreg p "$DIR/onityper.rb"
+screen -S $SESSION -X paste p
+screen -S $SESSION -X stuff $'\015'
+screen -S $SESSION -X stuff 'EOF'
+screen -S $SESSION -X stuff $'\015'
