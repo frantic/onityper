@@ -6,13 +6,13 @@ to bring the screen from state1 to state2
   $ $TESTDIR/reconciler.rb Test Jest
   Put <J> at 0:0
 
+  $ $TESTDIR/reconciler.rb "AAAA Test 1" "BBBB Test 2"
+  Put <BBBB> at 0:0
+  Put <2> at 2:0
+
   $ $TESTDIR/reconciler.rb "Very long string" "Bery isnt corect"
   Put <B> at 0:0
-  Put <i> at 1:0
-  Put <s> at 1:1
+  Put <is> at 1:0
   Put <t> at 1:3
-  Put <c> at 2:0
-  Put <o> at 2:1
-  Put <e> at 2:3
-  Put <c> at 2:4
-  Put <t> at 3:0
+  Put <co> at 2:0
+  Put <ect> at 2:3

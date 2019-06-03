@@ -58,13 +58,24 @@ class Reconciler
 
   def reconcile(from, to, &block)
     raise "Sizes differ #{from.size} != #{to.size}" if from.size != to.size
+    row = 0
+    col = 0
+    text = ""
     to.each_char.with_index do |char, index|
-      if from[index] != char
-        row = index / @width
-        col = index % @width
-        block.call(row, col, char)
+      if from[index] == char
+        unless text.empty?
+          block.call(row, col, text)
+          text = ""
+        end
+      else
+        if text.empty?
+          row = index / @width
+          col = index % @width
+        end
+        text << char
       end
     end
+    block.call(row, col, text) unless text.empty?
   end
 end
 
@@ -110,8 +121,8 @@ if __FILE__ == $0
     end
 
     next_screen = layout.render(message)
-    reconciler.reconcile(prev_screen, next_screen) do |row, col, char|
-      oled_command "cursor", "#{row},#{col}", "write", char
+    reconciler.reconcile(prev_screen, next_screen) do |row, col, text|
+      oled_command "cursor", "#{row},#{col}", "write", text
     end
     prev_screen = next_screen
   end
