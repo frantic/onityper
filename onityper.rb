@@ -95,17 +95,20 @@ if __FILE__ == $0
   reconciler = Reconciler.new(21, 8)
   message = ""
   shift = false
-  prev_screen = layout.render(message)
+  prev_screen = layout.render("# Onityper")
 
   
-  oled_command "-i", "dim", "on"
+  oled_command "-i", "dim", "on", "write", "# Onityper"
   trap("SIGINT") do
+    oled_command "-c"
+    exit!
+  end
+  trap("TERM") do
     oled_command "-c"
     exit!
   end
 
   dev = File.open(DEVICE, 'rb')
-  puts dev
   while data = dev.read(16)
     time, type, code, value = data.unpack("QSSL")
     letter = KEYS[code]

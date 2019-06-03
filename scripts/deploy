@@ -9,10 +9,14 @@ if [ -z "$SESSION" ]; then
 fi
 
 screen -S $SESSION -X stuff $'\003'
-screen -S $SESSION -X stuff 'ruby <<\EOF'
+screen -S $SESSION -X stuff $'killall ruby2.4-bin'
+screen -S $SESSION -X stuff $'\015'
+screen -S $SESSION -X stuff 'cat > /root/onityper.rb <<\EOF'
 screen -S $SESSION -X stuff $'\015'
 screen -S $SESSION -X readreg p "$ROOT/onityper.rb"
 screen -S $SESSION -X paste p
 screen -S $SESSION -X stuff $'\015'
 screen -S $SESSION -X stuff 'EOF'
+screen -S $SESSION -X stuff $'\015'
+screen -S $SESSION -X stuff 'ruby /root/onityper.rb &'
 screen -S $SESSION -X stuff $'\015'
