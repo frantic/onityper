@@ -21,6 +21,8 @@ SHIFT_LINE = <<-END
 END
 SHIFT_KEYS = Hash[*SHIFT_LINE.split(' ')]
 
+FILE_NAME = "/root/notes/" + Time.new.strftime("%Y-%m-%d_%H.%M.%S.txt")
+
 def oled_command(*args)
   Process.wait(fork { exec("/usr/sbin/oled-exp", "-q", *args) })
 end
@@ -134,6 +136,7 @@ if __FILE__ == $0
 
     if letter == :enter
       message << "\n"
+      File.write(FILE_NAME, message)
     end
 
     next_screen = layout.render(message)
