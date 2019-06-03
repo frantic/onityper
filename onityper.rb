@@ -16,6 +16,11 @@ KEYS = [
   :f1, :f2, :f3, :f4, :f5, :f6, :f7, :f8, :f9, :f10, 
 ]
 
+SHIFT_LINE = <<-END
+` ~ 1 ! 2 @ 3 # 4 $ 5 % 6 ^ 7 & 8 * 9 ( 0 ) - _ = + [ { ] } \\ | , < . > / ? ; : ' "
+END
+SHIFT_KEYS = Hash[*SHIFT_LINE.split(' ')]
+
 def oled_command(*args)
   Process.wait(fork { exec("/usr/sbin/oled-exp", "-q", *args) })
 end
@@ -115,7 +120,11 @@ if __FILE__ == $0
     next unless letter
 
     if letter.to_s.length == 1
-      letter = shift ? letter.to_s.upcase : letter.to_s.downcase
+      if shift
+        letter = SHIFT_KEYS[letter.to_s] || letter.to_s.upcase
+      else
+        letter = letter.to_s.downcase
+      end
       message << letter
     end
 
