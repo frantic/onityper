@@ -29,6 +29,11 @@ class TextLayout
   end
 
   def render(text)
+    page_size = @width * @height / 2
+    pages_count = text.size / page_size
+    last_page_start = pages_count * page_size
+    text = text[last_page_start..-1]
+
     res = []
     row = 0
     while text.length > 0 || row < @height || row % 2 == 1
