@@ -29,6 +29,9 @@ class TextLayout
   end
 
   def render(text)
+    last_newline = text.rindex("\n")
+    text = text[(last_newline + 1)..-1] if last_newline
+
     page_size = @width * @height / 2
     pages_count = text.size / page_size
     last_page_start = pages_count * page_size
@@ -113,12 +116,15 @@ if __FILE__ == $0
 
     if letter.to_s.length == 1
       letter = shift ? letter.to_s.upcase : letter.to_s.downcase
-      message += letter
+      message << letter
     end
 
     if letter == :backspace
       message.chop!
-      letter = ' '
+    end
+
+    if letter == :enter
+      message << "\n"
     end
 
     next_screen = layout.render(message)

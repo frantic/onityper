@@ -58,3 +58,27 @@ Make sure we don't go to next page until current one filled up
   |                     |
   |XXXXXXXXXXXXXXXXXXXXX|
   |                     |
+
+Newline starts new page
+
+  $ $TESTDIR/layout.rb "$(echo "Hello\nWorld")"
+  |World                |
+  |                     |
+  |                     |
+  |                     |
+  |                     |
+  |                     |
+  |                     |
+  |                     |
+
+Newline clears the screen
+
+  $ echo "Hello\n" | xargs -0 $TESTDIR/layout.rb
+  |                     |
+  |                     |
+  |                     |
+  |                     |
+  |                     |
+  |                     |
+  |                     |
+  |                     |
