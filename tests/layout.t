@@ -46,3 +46,15 @@ Text scrolling
   |                     |
   |                     |
   |                     |
+
+Make sure we don't go to next page until current one filled up
+
+  $ $TESTDIR/layout.rb $(ruby -e 'puts "X" * 84')
+  |XXXXXXXXXXXXXXXXXXXXX|
+  |                     |
+  |XXXXXXXXXXXXXXXXXXXXX|
+  |                     |
+  |XXXXXXXXXXXXXXXXXXXXX|
+  |                     |
+  |XXXXXXXXXXXXXXXXXXXXX|
+  |                     |

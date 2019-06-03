@@ -32,6 +32,7 @@ class TextLayout
     page_size = @width * @height / 2
     pages_count = text.size / page_size
     last_page_start = pages_count * page_size
+    last_page_start -= page_size if text.size > 0 && text.size % page_size == 0
     text = text[last_page_start..-1]
 
     res = []
