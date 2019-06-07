@@ -95,6 +95,7 @@ if __FILE__ == $0
   reconciler = Reconciler.new(21, 8)
   message = ""
   shift = false
+  alt = false
   prev_screen = layout.render("# Onityper")
 
   
@@ -120,6 +121,11 @@ if __FILE__ == $0
       next
     end
 
+    if letter == :alt || code == 100
+      alt = value == V_PRESS || value == V_REPEAT
+      next
+    end
+
     next unless value == V_PRESS || value == V_REPEAT
 
     next unless letter
@@ -134,7 +140,12 @@ if __FILE__ == $0
     end
 
     if letter == :backspace
-      message.chop!
+      if alt
+        last_separator = message.rindex(/(^|\W)\w*/)
+        message = message[0..last_separator]
+      else
+        message.chop!
+      end
     end
 
     if letter == :enter
