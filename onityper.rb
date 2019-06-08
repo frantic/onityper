@@ -1,3 +1,5 @@
+require 'json'
+
 DEVICE = '/dev/input/event0'
 
 EV_KEY = 1
@@ -90,6 +92,20 @@ class Reconciler
   end
 end
 
+def post_items(items)
+  File.write("/tmp/to_send.json", items.to_json)
+  Process.wait(fork {
+    exec(
+      "/usr/bin/curl", "--fail",
+      "-d", "@/tmp/to_send.json", "-H", "Content-Type: application/json",
+      "https://transfer.sh/f.json",
+    )
+  })
+  status = $?.exitstatus
+  raise "Failed with #{status}" if status != 0
+  File.delete("/tmp/to_send.json")
+end
+
 if __FILE__ == $0
   layout = TextLayout.new(21, 8)
   reconciler = Reconciler.new(21, 8)
@@ -98,6 +114,21 @@ if __FILE__ == $0
   alt = false
   prev_screen = layout.render("# Onityper")
 
+  sync_queue = JSON.parse(File.read("/tmp/to_send.json")) rescue []
+  Thread.fork do
+    loop do
+      sleep 5
+      next if sync_queue.empty?
+      items = sync_queue.dup
+      sync_queue.clear
+      begin
+        post_items items
+      rescue Exception => e
+        puts "Failed to upload:", e
+        sync_queue.insert(0, *items)
+      end
+    end
+  end
   
   oled_command "-i", "dim", "on", "write", "# Onityper"
   trap("SIGINT") do
@@ -149,8 +180,9 @@ if __FILE__ == $0
     end
 
     if letter == :enter
-      message << "\n"
-      File.write(FILE_NAME, message)
+      File.open(FILE_NAME, "a") { |io| io.write(message + "\n") }
+      sync_queue << message
+      message = ""
     end
 
     next_screen = layout.render(message)
