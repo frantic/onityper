@@ -29,6 +29,11 @@ def oled_command(*args)
   Process.wait(fork { exec("/usr/sbin/oled-exp", "-q", *args) })
 end
 
+def blink_rgb_led(hex)
+  system "expled #{hex} > /dev/null"
+  system "expled 000000 > /dev/null"
+end
+
 class TextLayout
   attr_reader :width, :height
 
@@ -123,9 +128,11 @@ if __FILE__ == $0
       sync_queue.clear
       begin
         post_items items
+        blink_rgb_led("000100")
       rescue Exception => e
         puts "Failed to upload:", e
         sync_queue.insert(0, *items)
+        blink_rgb_led("010000")
       end
     end
   end
