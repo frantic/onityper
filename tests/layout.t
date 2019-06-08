@@ -26,11 +26,11 @@ Empty state
 Text wrapping
 
   $ $TESTDIR/layout.rb "Hello World Hello World Hello World Hello World"
-  |Hello World Hello Wor|
+  |Hello World Hello    |
   |                     |
-  |ld Hello World Hello |
+  |World Hello World    |
   |                     |
-  |World                |
+  |Hello World          |
   |                     |
   |                     |
   |                     |
@@ -38,9 +38,9 @@ Text wrapping
 Text scrolling
 
   $ $TESTDIR/layout.rb "Hello World Hello World Hello World Hello World. Long text. Long text. Long text. Long text. Long text. Done"
-  |ng text. Long text. D|
+  |text. Long text. Long|
   |                     |
-  |one                  |
+  |text. Done           |
   |                     |
   |                     |
   |                     |

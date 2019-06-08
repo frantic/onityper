@@ -46,20 +46,44 @@ class TextLayout
     last_newline = text.rindex("\n")
     text = text[(last_newline + 1)..-1] if last_newline
 
-    page_size = @width * @height / 2
-    pages_count = text.size / page_size
+    tokens = text.split(" ").flat_map do |token|
+      if token.length > @width
+        parts = []
+        while token && !token.empty?
+          parts << token[0..@width - 1]
+          token = token[@width..-1]
+        end
+        parts
+      else
+        [token]
+      end
+    end
+
+    lines = []
+    current_line = ""
+    while token = tokens.shift
+      if current_line.length + token.length + 1 > @width && current_line.length > 0
+        lines << current_line
+        current_line = ""
+      end
+      current_line << " " unless current_line.empty?
+      current_line << token
+    end
+    lines << current_line
+
+    page_size = @height / 2
+    pages_count = lines.size / page_size
     last_page_start = pages_count * page_size
-    last_page_start -= page_size if text.size > 0 && text.size % page_size == 0
-    text = text[last_page_start..-1]
+    last_page_start -= page_size if lines.size > 0 && lines.size % page_size == 0
+    lines = lines[last_page_start..-1]
 
     res = []
     row = 0
-    while text.length > 0 || row < @height || row % 2 == 1
+    while lines.length > 0 || row < @height || row % 2 == 1
       if row % 2 == 1
         res << " " * @width
       else
-        res << text[0...@width].ljust(@width)
-        text = text[@width..-1] || ""
+        res << (lines.shift || "").ljust(@width)
       end
       row += 1
     end
