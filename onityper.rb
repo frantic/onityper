@@ -98,7 +98,7 @@ def post_items(items)
     exec(
       "/usr/bin/curl", "--fail",
       "-d", "@/tmp/to_send.json", "-H", "Content-Type: application/json",
-      "https://transfer.sh/f.json",
+      "https://us-central1-onityper.cloudfunctions.net/appendLines",
     )
   })
   status = $?.exitstatus

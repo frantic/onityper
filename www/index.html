@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Onityper</title>
+
+    <script defer src="/__/firebase/6.1.1/firebase-app.js"></script>
+    <script defer src="/__/firebase/6.1.1/firebase-auth.js"></script>
+    <script defer src="/__/firebase/6.1.1/firebase-database.js"></script>
+    <script defer src="/__/firebase/init.js"></script>
+    <style type="text/css">
+      #lines {
+        white-space: pre;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="button">...</button>
+    <div id="lines">Loading...</div>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        firebase.auth().onAuthStateChanged(user => {
+          document.getElementById('button').innerText = user ? user.displayName : 'Login';
+          document.getElementById('button').onclick = () => {
+            if (user) {
+              firebase.auth().signOut();
+            } else {
+              const provider = new firebase.auth.GoogleAuthProvider();
+              firebase.auth().signInWithPopup(provider);
+            }
+          };
+
+          if (user) {
+            firebase.database().ref('/lines').on('value', snapshot => { 
+              document.getElementById('lines').innerText = 
+                Object.values(snapshot.val()).map(item => item.line).join('\n');
+            });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
